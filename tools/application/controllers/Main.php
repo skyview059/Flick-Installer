@@ -108,7 +108,7 @@ class Main extends MY_Controller {
         /* Check the connection */ 
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
-        }        
+        }
         
         /* Execute the SQL queries */ 
         if ($conn->multi_query($sql) === TRUE) {
@@ -117,7 +117,7 @@ class Main extends MY_Controller {
         } else {
             http_response_code( 400 ) ;
             echo "Error importing SQL file: " . $conn->error;
-        }        
+        }
     }  
     
     public function utf8mb4_gci(){

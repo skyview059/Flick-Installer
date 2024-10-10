@@ -18,16 +18,28 @@ class CRM_Installer extends MY_Controller {
         $db_user  = $this->input->post('db_user');
         $db_pass  = $this->input->post('db_pass');
 
-        $connection = mysqli_connect($hostname, $db_user, $db_pass, $database);
 
-        if (mysqli_connect_errno()) {
-          echo "<p class='fail'>Failed to connect to MySQL: " . mysqli_connect_error() . '</p>';
-          exit();
+        try {            
+            mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);                
+            $mysqli = new mysqli($hostname, $db_user, $db_pass, $database);
+
+            if ($mysqli->ping()) {
+                // echo "Our connection is ok!\n";
+
+                echo ("<p class='ok'>Connection is okay with db <strong> {$database} </strong><br />");
+
+            } else {
+                throw new Exception("Error: " . $mysqli->error);
+            }                
+            $mysqli->close();
+
+        } catch (mysqli_sql_exception $e) {            
+            echo "Failed to connect to MySQL: " . $e->getMessage();
+
+        } catch (Exception $e) {            
+            echo "An error occurred: " . $e->getMessage();
         }
 
-        echo ("<p class='ok'>Successfully connected to database:<strong> {$database} </strong><br />");
-        echo ("Using host:<strong>{$hostname}</strong><br />");
-        echo ("As the user:<strong>{$db_user}</strong></p>");
     }        
     
     public function index(){
@@ -40,9 +52,7 @@ class CRM_Installer extends MY_Controller {
             die('Fail to download');
         }
         
-        $this->_runUnzipper( $path_to_zip_file );
-        
-        
+        $this->_runUnzip( $path_to_zip_file );                
         $this->_saveDBConfig();
         $this->_saveSiteConfig();
         
@@ -55,6 +65,36 @@ class CRM_Installer extends MY_Controller {
                                 
         redirect( site_url('../') );
     }   
+
+    public function __import_db( $file ){
+
+        $hostname = $this->input->post('db_host');
+        $database = $this->input->post('db_name');
+        $db_user  = $this->input->post('db_user');
+        $db_pass  = $this->input->post('db_pass');
+
+
+        $conn = new mysqli($hostname, $db_user, $db_pass, $database);
+
+        /* Check the connection */ 
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        
+        $sql = file_get_contents($file);
+        if(empty($sql)){
+            die( "Nothing to do here" );
+        }
+
+        /* Execute the SQL queries */ 
+        if ($conn->multi_query($sql) === TRUE) {
+            http_response_code( 200 ) ;
+            echo '<p class="alert alert-success">SQL file imported successfully</p>';
+        } else {
+            http_response_code( 400 ) ;
+            echo "Error importing SQL file: " . $conn->error;
+        }
+    }
             
     private function _downloadZip( $src_link = '' ){ 
         if(empty($src_link)){ return false; }        
@@ -68,7 +108,7 @@ class CRM_Installer extends MY_Controller {
         }
     }
 
-    protected function _runUnzipper( $path_to_zip_file ){    
+    protected function _runUnzip( $path_to_zip_file ){    
         $zip 	= new ZipArchive();
         $open	= $zip->open( $path_to_zip_file );
 
@@ -105,16 +145,14 @@ class CRM_Installer extends MY_Controller {
     }
 
     private function _saveSiteConfig(){
-
         $site_url       = $_POST['site_url'];
         $tpl_config     = _tpl_path . 'config.php.tpl';
-
-        $cnf_sgring     = file_get_contents( $tpl_config );
+        $config_str     = file_get_contents( $tpl_config );
         $search         = ['%base_url%','%cookie_prefix%','%cookie_domain%'];
         $sub_domain     = str_replace('https://', '', $site_url );
-        $replace        = [$site_url, 'fo_', rtrim($sub_domain, '/') ];
+        $replace        = [ $site_url, 'fo_', rtrim($sub_domain, '/') ];
 
-        $save_config_file  = str_replace($search, $replace, $cnf_sgring);    
+        $save_config_file  = str_replace( $search, $replace, $config_str );
 
         file_put_contents( _config_file, $save_config_file );
         if(file_exists( _config_file )){        
@@ -123,6 +161,4 @@ class CRM_Installer extends MY_Controller {
             return '<p class="ok">Config Fail to Save</p>';
         }
     }
-
-    
 }
