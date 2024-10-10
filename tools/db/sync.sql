@@ -26,6 +26,17 @@ INSERT IGNORE INTO `role_permissions` (`role_id`, `acl_id`, `access`) VALUES
 (2, (SELECT id FROM `acls` WHERE `permission_key` = 'cms/frontend_edit'), 1);
 
 
+INSERT INTO `acls` (`module_id`, `permission_name`, `permission_key`, `icon`, `order_id`, `menu_item`) VALUES 
+(2, 'Client Settings', 'settings/client', 'fa-user', '1', 'No');
+
+INSERT IGNORE INTO `role_permissions` (`role_id`, `acl_id`, `access`) VALUES 
+(1, (SELECT id FROM `acls` WHERE `permission_key` = 'settings/client'), 1),
+(2, (SELECT id FROM `acls` WHERE `permission_key` = 'settings/client'), 1);
+
+
+
+
+
 UPDATE `acls` SET `permission_key` = 'settings/cms' WHERE `permission_key` = 'cms/setting';
 
 DELETE FROM `role_permissions` WHERE `acl_id` NOT IN ( SELECT `id` FROM `acls` );
@@ -49,8 +60,6 @@ ALTER TABLE `settings`
     CHANGE `field_group` `field_group` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'general';
 */
 
-INSERT INTO `acls` (`module_id`, `permission_name`, `permission_key`, `icon`, `order_id`, `menu_item`) VALUES 
-(2, 'Client Settings', 'settings/client', 'fa-user', '1', 'No');
 
 
 

@@ -34,7 +34,7 @@ class CRM_Installer extends MY_Controller {
         
         $src_file = $this->input->post('src_file');
                         
-        $path_to_zip_file = $this->_donwloadZip( $src_file );
+        $path_to_zip_file = $this->_downloadZip( $src_file );
                 
         if($path_to_zip_file == false ){
             die('Fail to download');
@@ -43,7 +43,7 @@ class CRM_Installer extends MY_Controller {
         $this->_runUnzipper( $path_to_zip_file );
         
         
-        $this->_saveDBConig();
+        $this->_saveDBConfig();
         $this->_saveSiteConfig();
         
         /* SQL file path */ 
@@ -56,7 +56,7 @@ class CRM_Installer extends MY_Controller {
         redirect( site_url('../') );
     }   
             
-    private function _donwloadZip( $src_link = '' ){ 
+    private function _downloadZip( $src_link = '' ){ 
         if(empty($src_link)){ return false; }        
         $sfile      = pathinfo( $src_link );
         $src_name   = "{$sfile['filename']}.{$sfile['extension']}";
@@ -81,7 +81,7 @@ class CRM_Installer extends MY_Controller {
         }
     }
         
-    private function _saveDBConig(){    
+    private function _saveDBConfig(){    
         $options = [
             '%db_host%' => $_POST['db_host'],
             '%db_user%' => $_POST['db_user'],
@@ -91,8 +91,8 @@ class CRM_Installer extends MY_Controller {
         $search         = array_keys($options);    
         $replace        = array_values($options);
 
-        $tpl_datebase   = _tpl_path . 'database.php.tpl';
-        $db_file        = file_get_contents( $tpl_datebase );    
+        $tpl_database   = _tpl_path . 'database.php.tpl';
+        $db_file        = file_get_contents( $tpl_database );    
         $update         = str_replace($search, $replace, $db_file);    
 
         /* DB Path */

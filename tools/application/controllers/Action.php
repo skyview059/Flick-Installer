@@ -26,7 +26,11 @@ class Action extends MY_Controller {
         
         $simpleBackup = SimpleBackup::setDatabase([$db_name, $db_user, $db_pass, $db_host])
           ->storeAfterExportTo($bakup_path, $file_name );
-        echo $simpleBackup->getExportedName();
+        
+        
+        $db_file_name = $simpleBackup->getExportedName();
+        
+        echo site_url( "../temp/backup/{$db_file_name}");
     }
     
     public function down_zip_n_unzip(){            
@@ -34,7 +38,7 @@ class Action extends MY_Controller {
     
         $src_zip = $this->_donwloadZip( $patch_src );
         if( $src_zip == false ){
-            $respond = 'File fail to donlwoad.';
+            $respond = 'File fail to download.';
             $msg = "<p class='alert alert-danger'>{$respond}</p>";
         } else {
             $respond = $this->_runUnzipper( $src_zip );
@@ -51,7 +55,7 @@ class Action extends MY_Controller {
         $back_to    = _site_root . 'index-bak.php';
 
         if(file_exists( $back_to )){
-            die( "Site allready at Maintenance Mode. <a href='". site_url('action/set_live') . ">  click to Undo </a>" );
+            die( "Site already at Maintenance Mode. <a href='". site_url('action/set_live') . ">  click to Undo </a>" );
         }
 
         rename($src_file, $back_to );
@@ -60,9 +64,9 @@ class Action extends MY_Controller {
         $src_path   = _site_root . 'tools/_tpl/index-um.php.tpl';
         $dist_path  = _site_root . 'index.php';
         if(copy($src_path, $dist_path )){
-            echo "Site Under maintance mode set done ";
+            echo "Site Under maintenance mode set done ";
         } else {
-            echo "Setup Under maintance mode fail";
+            echo "Setup Under maintenance mode fail";
         }  
     }
     
@@ -71,7 +75,7 @@ class Action extends MY_Controller {
         $bak_file = _site_root . 'index-bak.php';
         
         if(!file_exists( $bak_file )){
-            die( "Site allready at Live Mode. <a href='". site_url('/') . "'> Back to Home </a>" );
+            die( "Site already at Live Mode. <a href='". site_url('/') . "'> Back to Home </a>" );
         }
         
         unlink( _site_root . 'index.php' );    

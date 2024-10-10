@@ -412,7 +412,7 @@ class CI_Typography {
 		$newstr = '';
 		for ($ex = explode('pre>', $str), $ct = count($ex), $i = 0; $i < $ct; $i++)
 		{
-			$newstr .= (($i % 2) === 0) ? nl2br($ex[$i]) : $ex[$i];
+			$newstr .= (($i % 2) === 0) ? nl2br_fk($ex[$i]) : $ex[$i];
 			if ($ct - 1 !== $i)
 			{
 				$newstr .= 'pre>';

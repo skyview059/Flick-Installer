@@ -73,7 +73,7 @@
                     <div class="input-group">
                         <span class="input-group-addon">Download Patch</span>
                         <input name="patch_src" class="form-control" 
-                               value="https://portal.flickmedialtd.com/uploads/plugins/27/patch_v316.zip" type="text"/>
+                               value="https://portal.flickmedialtd.com/uploads/plugins/27/patch_v317.zip" type="text"/>
                         
                         <span  class="input-group-btn">                            
                             <button type="submit" class="btn btn-primary">
