@@ -51,7 +51,8 @@ class Main extends MY_Controller {
         }
         
         $db_name = "Tables_in_{$this->db->database}";        
-        $sql_str = "SHOW TABLES WHERE `{$db_name}` LIKE '_tmp_%'";        
+        $sql_str = "SHOW TABLES WHERE `{$db_name}` LIKE '_tmp_%'";   
+        
         
         $tables = $this->db->query( $sql_str )->result();        
         
