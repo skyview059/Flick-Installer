@@ -128,13 +128,13 @@ class Main extends MY_Controller {
         $line = 'SELECT CONCAT("ALTER TABLE `", TABLE_SCHEMA, "`.`", TABLE_NAME,"` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;") AS AlterQuery' . "\r\n";
         $line .= 'FROM INFORMATION_SCHEMA.TABLES' . "\r\n";
         $line .= "WHERE TABLE_SCHEMA='{$this->db->database}'" . "\r\n";
-        $line .= 'AND TABLE_TYPE="BASE TABLE" AND TABLE_COLLATION != "utf8mb4_general_ci"';
+        $line .= 'AND TABLE_TYPE="BASE TABLE" AND TABLE_COLLATION != "utf8mb4_unicode_ci"';
         
         $data['quries'] = $this->db->query($line)->result();
         
         $tbl_collat = 'SELECT `TABLE_NAME`, `TABLE_COLLATION` ';
         $tbl_collat .= 'FROM INFORMATION_SCHEMA.TABLES' . "\r\n";
-        $tbl_collat .= "WHERE TABLE_SCHEMA='{$this->db->database}' AND TABLE_COLLATION != 'utf8mb4_general_ci'" . "\r\n";
+        $tbl_collat .= "WHERE TABLE_SCHEMA='{$this->db->database}' AND TABLE_COLLATION != 'utf8mb4_unicode_ci'" . "\r\n";
         
         $data['tbl_collat'] = $this->db->query( $tbl_collat )->result();
         

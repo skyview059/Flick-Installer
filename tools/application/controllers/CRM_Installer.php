@@ -68,7 +68,7 @@ class CRM_Installer extends MY_Controller {
         }
     }
 
-    private function _runUnzipper( $path_to_zip_file ){    
+    protected function _runUnzipper( $path_to_zip_file ){    
         $zip 	= new ZipArchive();
         $open	= $zip->open( $path_to_zip_file );
 
